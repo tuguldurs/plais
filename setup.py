@@ -11,7 +11,8 @@ setup(
         'tqdm>4.62',
         'scikit-learn>=1.0',
         'pandas>=1.3',
-        'imageio>=2.13'
+        'imageio>=2.13',
+        'imageio-ffmpeg>=0.4'
     ],
     python_requires='>=3.7',
 )
