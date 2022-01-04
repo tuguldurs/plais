@@ -12,7 +12,8 @@ setup(
         'scikit-learn>=1.0',
         'pandas>=1.3',
         'imageio>=2.13',
-        'imageio-ffmpeg>=0.4'
+        'imageio-ffmpeg>=0.4',
+        'pyinstaller>=4.7'
     ],
     python_requires='>=3.7',
 )
