@@ -5,5 +5,5 @@ from pathlib import Path
 package_path = Path(os.path.dirname(__file__)).parent
 package_data_path = package_path / 'data'
 
-# package imports
+# package import
 from .plais import main

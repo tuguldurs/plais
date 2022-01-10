@@ -48,8 +48,7 @@ class Recording:
     @staticmethod
     def rgb2gray(rgbimg: np.ndarray) -> np.ndarray:
         """Converts 3D rgb image into 2D grayscale."""
-        gray = lambda rgb: np.dot(rgb[..., :3], [0.299, 0.587, 0.114])
-        return gray(rgbimg)
+        return np.dot(rgbimg[..., :3], [0.299, 0.587, 0.114])
 
     def frame(self, idx: int, gray: bool = True) -> np.ndarray:
         """Fetches frame by index.
