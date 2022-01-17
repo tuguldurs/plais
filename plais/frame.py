@@ -20,7 +20,7 @@ class Frame:
 
 	def __init__(self, frame) -> None:
 		self.gray = self.rgb2gray(frame)
-		self.crop = self.gray2crop(self.gray)
+		self.processed = self.process(self.gray)
 
 	@staticmethod
 	def rgb2gray(rgbimg: np.ndarray) -> np.ndarray:
@@ -31,10 +31,28 @@ class Frame:
 	def gray2crop(grayimg: np.ndarray) -> np.ndarray:
 		"""Crops 2D grayscale image.
 
-		TODO: this should be read from config file, possibly 
-		      controlled by the choice arg.
+		TODO: this should be read from config file.
 		"""
-		return grayimg[400:1000, 240:1640]
+		return grayimg[400:900, 240:1640]
+
+	@staticmethod
+	def apply_patch(grayimg: np.ndarray, patch: list) -> np.ndarray:
+		"""Applies null patches to 2D grayscale image."""
+		grayimg[patch[0]:patch[1], patch[2]: patch[3]] = 0
+		return grayimg
+
+
+	def process(self, grayimg: np.ndarray) -> np.ndarray:
+		"""Applies null patches to 2D grayscale image.
+
+		TODO: patches should be read from config file.
+		"""
+		cropped = self.gray2crop(self.gray)
+		patches = [[0,300,0,35], [0,270,0,60], [0,230,0,85], [0,180,0,100], 
+		           [0,300,1360,1400], [0,240,1330,1360], [0,200,1300,1330], [0,150,1280,1300]]
+		for patch in patches:
+			grayimg = self.apply_patch(cropped, patch)
+		return grayimg
 
 
 class MedianVoxel:
@@ -60,7 +78,7 @@ class MedianVoxel:
 
 	def _collect_frames(self) -> list:
 		"""Collects all frames by index."""
-		return [Frame(self.rec.frame(idx)).crop for idx in tqdm(self.idxs)]
+		return [Frame(self.rec.frame(idx)).processed for idx in tqdm(self.idxs)]
 
 	def _stack_frames(self) -> np.ndarray:
 		"""Stacks collected frames."""
@@ -69,5 +87,6 @@ class MedianVoxel:
 
 	def _get_filter(self) -> np.ndarray:
 		"""Computes median voxel filter based on standard deviation for each pixel."""
+		log.info('creating filter...')
 		stacked_frames = self._stack_frames()
 		return np.std(stacked_frames, axis=-1)
