@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 
 from .recording import Recording
-from .frame import Frame
+from .frame import Frame, MedianVoxel
 
 log  = logging.getLogger(__name__)
 fmt = '%(asctime)s ~ %(name)14s ~ %(levelname)8s ::: %(message)s'
@@ -19,6 +19,7 @@ def main(args) -> None:
     # args.speed
     rec = Recording(args.FileChooser)
     frame = Frame(rec.frame(0))
+    mask = MedianVoxel(rec, 0, 180).mask
 
 
 if __name__ == '__main__':

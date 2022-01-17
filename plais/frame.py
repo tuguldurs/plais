@@ -3,6 +3,9 @@ from __future__ import annotations
 import logging
 
 import numpy as np
+from tqdm import tqdm
+
+from .recording import Recording
 
 
 log = logging.getLogger(__name__)
@@ -32,3 +35,39 @@ class Frame:
 		      controlled by the choice arg.
 		"""
 		return grayimg[400:1000, 240:1640]
+
+
+class MedianVoxel:
+	"""Creates median voxel mask.
+
+	Attributes:
+		rec - Input video as Recording object.
+		tstart - Time to start extracting frames.
+		tend - Time to end extracting frames.
+	"""
+
+	def __init__(self, rec: Recording, tstart: int, tend: int) -> None:
+		self.rec = rec
+		self.tstart = tstart
+		self.tend = tend
+		self.idxs = self._idx_second()
+		self.mask = self._make_mask()
+
+	def _idx_second(self) -> np.ndarray:
+		"""Computes idx array for every second of given duration."""
+		duration = self.tend - self.tstart
+		return np.arange(duration) * self.rec.fps
+
+	def _collect_frames(self) -> list:
+		"""Collects all frames by index."""
+		return [Frame(self.rec.frame(idx)).crop for idx in tqdm(self.idxs)]
+
+	def _stack_frames(self) -> np.ndarray:
+		"""Stacks collected frames."""
+		frames = self._collect_frames()
+		return np.stack(frames, axis=-1)
+
+	def _make_mask(self) -> np.ndarray:
+		"""Computes median voxel mask based on standard deviation for each pixel."""
+		stacked_frames = self._stack_frames()
+		return np.std(stacked_frames, axis=-1)

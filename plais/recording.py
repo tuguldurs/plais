@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 
-import imageio
+from imageio import get_reader
 import numpy as np
 
 
@@ -18,7 +18,7 @@ class Recording:
     
     def __init__(self, fname: str) -> None:
         self.fname = fname
-        self.video = imageio.get_reader(self.fname, 'ffmpeg')
+        self.video = get_reader(self.fname, 'ffmpeg')
         self.meta = self._get_meta_data()
         self.duration = self.meta['duration']
         self.fps = int(self.meta['fps'])
