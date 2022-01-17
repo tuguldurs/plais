@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-import os
 import logging
-import datetime
 
 import imageio
 import numpy as np
@@ -16,15 +14,9 @@ class Recording:
 
     Attributes:
         fname - Full system path to recording file.
-        tstart - Starting time [sec] for analysis.
-        tend - End time [sec] for analysis.
-        speed - Line speed [ft / min].
     """
     
-    def __init__(self, fname: str,
-                 tstart: int,
-                 tend: int | None,
-                 speed: int) -> None:
+    def __init__(self, fname: str) -> None:
         self.fname = fname
         self.video = imageio.get_reader(self.fname, 'ffmpeg')
         self.meta = self._get_meta_data()
@@ -33,12 +25,6 @@ class Recording:
         self.size = self.meta['size']
         self.maxidx = self._get_index_length()
         self.logger()
-        self.speed = speed
-        self.tstart = tstart
-        if not tend:
-            self.tend = int(self.duration)-1
-        else:
-            self.tend = tend
 
     def _get_meta_data(self) -> dict:
         """Fetches video meta-data."""

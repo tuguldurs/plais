@@ -13,7 +13,10 @@ __all__ = ['plais']
 
 
 def main(args) -> None:
-    rec = Recording(args.FileChooser, args.start, args.end, args.speed)
+    # args.start
+    # args.end
+    # args.speed
+    rec = Recording(args.FileChooser)
 
 
 if __name__ == '__main__':
