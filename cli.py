@@ -15,8 +15,14 @@ def gui_generator() -> None:
     parser = GooeyParser(description=desc)
 
     parser.add_argument("FileChooser", help=help_msg, widget="FileChooser")
+    
+    parser.add_argument('-s', '--start', default=0,
+        type=int, help='start time (in seconds)')
 
-    parser.add_argument('-d', '--send-report', default='user@domain.com', 
+    parser.add_argument('-e', '--end',
+        type=int, help='end time (in seconds)')
+    
+    parser.add_argument('-r', '--send-report', default='user@domain.com', 
         type=str, help='email to send the report to [not implemented yet!]')
 
     main(parser.parse_args())

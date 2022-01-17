@@ -23,7 +23,7 @@ class Recording:
     
     def __init__(self, fname: str,
                  tstart: int,
-                 tend: int,
+                 tend: int | None,
                  speed: float = 40) -> None:
         self.fname = fname
         self.video = imageio.get_reader(self.fname, 'ffmpeg')
@@ -35,7 +35,11 @@ class Recording:
         self.logger()
         self.speed = speed
         self.tstart = tstart
-        self.tend = tend
+        if not tend:
+            self.tend = int(self.duration)-1
+        else:
+            self.tend = tend
+        print(self.tstart, self.tend)
 
     def _get_meta_data(self) -> dict:
         """Fetches video meta-data."""

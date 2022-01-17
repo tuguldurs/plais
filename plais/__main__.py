@@ -9,9 +9,7 @@ __all__ = ['plais']
 
 
 def main(args) -> None:
-    print(args)
-    print(vars(args))
-    rec = Recording(args.FileChooser, 0, 10)
+    rec = Recording(args.FileChooser, args.start, args.end)
 
 
 if __name__ == '__main__':
