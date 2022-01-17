@@ -19,7 +19,7 @@ def main(args) -> None:
     # args.speed
     rec = Recording(args.FileChooser)
     frame = Frame(rec.frame(0))
-    mask = MedianVoxel(rec, 0, 180).mask
+    mask = MedianVoxel(rec, 0, 180).filter
 
 
 if __name__ == '__main__':

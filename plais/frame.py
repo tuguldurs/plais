@@ -38,7 +38,7 @@ class Frame:
 
 
 class MedianVoxel:
-	"""Creates median voxel mask.
+	"""Creates median voxel filter.
 
 	Attributes:
 		rec - Input video as Recording object.
@@ -51,7 +51,7 @@ class MedianVoxel:
 		self.tstart = tstart
 		self.tend = tend
 		self.idxs = self._idx_second()
-		self.mask = self._make_mask()
+		self.filter = self._get_filter()
 
 	def _idx_second(self) -> np.ndarray:
 		"""Computes idx array for every second of given duration."""
@@ -67,7 +67,7 @@ class MedianVoxel:
 		frames = self._collect_frames()
 		return np.stack(frames, axis=-1)
 
-	def _make_mask(self) -> np.ndarray:
-		"""Computes median voxel mask based on standard deviation for each pixel."""
+	def _get_filter(self) -> np.ndarray:
+		"""Computes median voxel filter based on standard deviation for each pixel."""
 		stacked_frames = self._stack_frames()
 		return np.std(stacked_frames, axis=-1)
