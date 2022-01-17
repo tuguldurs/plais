@@ -6,4 +6,4 @@ package_path = Path(os.path.dirname(__file__)).parent
 package_data_path = package_path / 'data'
 
 # package import
-from .plais import main
+from . import __main__
