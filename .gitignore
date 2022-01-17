@@ -131,3 +131,4 @@ dmypy.json
 clean.sh
 clean.bat
 d/
+test.py
