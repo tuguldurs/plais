@@ -1,10 +1,12 @@
 import gooey
+from pathlib import Path
+
 gooey_root = os.path.dirname(gooey.__file__)
 
 block_cipher = None
 
 a = Analysis(['cli.py'],
-             pathex=['c:\\Users\\152-3\\plais'],
+             pathex=[Path.cwd()],
              binaries=[],
              datas=[],
              hiddenimports=['imageio.plugins.ffmpeg'],
