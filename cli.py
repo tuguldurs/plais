@@ -16,11 +16,14 @@ def gui_generator() -> None:
 
     parser.add_argument("FileChooser", help=help_msg, widget="FileChooser")
     
-    parser.add_argument('-s', '--start', default=0,
-        type=int, help='start time (in seconds)')
+    parser.add_argument('-b', '--start', default=0,
+        type=int, help='start time [seconds])')
 
     parser.add_argument('-e', '--end',
-        type=int, help='end time (in seconds)')
+        type=int, help='end time [seconds]')
+
+    parser.add_argument('-s', '--speed', default=40,
+        type=int, help='line speed [feet / minute]')
     
     parser.add_argument('-r', '--send-report', default='user@domain.com', 
         type=str, help='email to send the report to [not implemented yet!]')

@@ -15,16 +15,16 @@ class Recording:
     """Reads input recording and extracts individual frames.
 
     Attributes:
-        fname - full path to recording.
-        speed - optional line speed [ft / min], defaults to 40.
-        tinterval - optional start and end times for analysis [sec],
-                    defaults to full interval.
+        fname - Full system path to recording file.
+        tstart - Starting time [sec] for analysis.
+        tend - End time [sec] for analysis.
+        speed - Line speed [ft / min].
     """
     
     def __init__(self, fname: str,
                  tstart: int,
                  tend: int | None,
-                 speed: float = 40) -> None:
+                 speed: int) -> None:
         self.fname = fname
         self.video = imageio.get_reader(self.fname, 'ffmpeg')
         self.meta = self._get_meta_data()
@@ -39,7 +39,6 @@ class Recording:
             self.tend = int(self.duration)-1
         else:
             self.tend = tend
-        print(self.tstart, self.tend)
 
     def _get_meta_data(self) -> dict:
         """Fetches video meta-data."""
