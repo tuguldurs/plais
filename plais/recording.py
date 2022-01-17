@@ -34,26 +34,16 @@ class Recording:
         """Computes maximum frame index."""
         return round(self.duration * self.fps)
 
-    @staticmethod
-    def rgb2gray(rgbimg: np.ndarray) -> np.ndarray:
-        """Converts 3D rgb image into 2D grayscale."""
-        return np.dot(rgbimg[..., :3], [0.299, 0.587, 0.114])
-
-    def frame(self, idx: int, gray: bool = True) -> np.ndarray:
+    def frame(self, idx: int) -> np.ndarray:
         """Fetches frame by index.
 
         Args:
             idx - Index of frame.
-            gray - Optional flag for grayscale conversion.
 
         Returns:
-            2D grayscale image if gray is True, 3D color image if gray is False.
+            3D color image.
         """
-        frame = self.video.get_data(idx)
-        if gray:
-            return self.rgb2gray(frame)
-        else:
-            return frame
+        return self.video.get_data(idx)
 
     def logger(self) -> None:
         """Logs input video info."""
