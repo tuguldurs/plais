@@ -21,14 +21,13 @@ def main(args) -> None:
     median_filter = MedianVoxel(rec, 0, 180).filter
 
     log.info(f'analysis duration {args.start} - {args.end} [sec]')
-    amplifier = 10
     for i in tqdm(range(args.start, args.end)):
         idx = i * rec.fps
         idx_next = (i + 1) * rec.fps
         frame = Frame(rec.frame(idx)).processed
         frame_next = Frame(rec.frame(idx_next)).processed
         absdiff = abs(frame_next - frame)
-        residual = median_filter * amplifier - absdiff
+        residual = median_filter * args.sensitivity - absdiff
         residual[residual > 0] = 0
         residual = abs(residual)
 

@@ -24,6 +24,9 @@ def gui_generator() -> None:
 
     parser.add_argument('-s', '--speed', default=40,
         type=int, help='line speed [feet / minute]')
+
+    parser.add_argument('-x', '--sensitivity', default=10,
+        type=float, help='detector sensitivity [smaller more sensitive]')
     
     parser.add_argument('-r', '--send-report', default='user@domain.com', 
         type=str, help='email to send the report to [not implemented yet!]')
