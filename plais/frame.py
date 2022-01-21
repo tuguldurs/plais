@@ -5,6 +5,7 @@ import logging
 import numpy as np
 from tqdm import tqdm
 
+from utils.parse_config import parse_config
 from .recording import Recording
 
 
@@ -48,9 +49,7 @@ class Frame:
 		TODO: patches should be read from config file.
 		"""
 		cropped = self.gray2crop(self.gray)
-		patches = [[0,350,0,15], [0,300,0,35], [0,270,0,60], [0,230,0,85], [0,190,0,110], [0,160,0,120], [0,140,0,140], 
-		 [0,120,0,160],  [0,90,0,180],  [0,60,0,200],
-		           [0,320,1360,1400], [0,270,1330,1400], [0,220,1300,1400], [0,150,1280,1400], [0,120,1250,1400], [0,75,1230,1400], [0,50,1200,1350]]
+		patches = parse_config('patch')
 		for patch in patches:
 			grayimg = self.apply_patch(cropped, patch)
 		return grayimg

@@ -5,16 +5,12 @@ import json
 from plais import package_config_path
 
 
-def logger_config() -> dict:
-	"""Parse logging config."""
+def parse_config(config_name) -> dict:
+	"""Parse logging or patch config."""
 
-	config_file = f'{package_config_path}/logger.json'
+	config_file = f'{package_config_path}/{config_name}.json'
+
 	with open(config_file) as handler:
-		log_config = json.load(handler)
+		configuration = json.load(handler)
 
-	return log_config
-
-
-def patch_config() -> list:
-	"""Parse patch config."""
-	...
+	return configuration

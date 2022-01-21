@@ -4,13 +4,13 @@ import logging.config
 
 from tqdm import tqdm
 
-from utils.parse_config import logger_config
+from utils.parse_config import parse_config
 from .recording import Recording
 from .frame import MedianVoxel
 from .residual import Residual
 
 
-logging.config.dictConfig(logger_config())
+logging.config.dictConfig(parse_config('logger'))
 log = logging.getLogger(__name__)
 
 
