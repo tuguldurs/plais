@@ -1,19 +1,26 @@
 from __future__ import annotations
 
-import logging
+import logging.config
 
 from tqdm import tqdm
 
+from utils.parse_config import logger_config, patch_config
 from .recording import Recording
 from .frame import MedianVoxel
 from .residual import Residual
 
-log  = logging.getLogger(__name__)
-fmt = '%(asctime)s ~ %(name)14s ~ %(levelname)8s ::: %(message)s'
-lvl = logging.INFO
-logging.basicConfig(level=lvl, format=fmt)
+
+#log  = logging.getLogger(__name__)
+#fmt = '%(asctime)s ~ %(name)14s ~ %(levelname)8s ::: %(message)s'
+#lvl = logging.INFO
+#logging.basicConfig(level=lvl, format=fmt)
+
+logging.config.dictConfig(logger_config())
+log = logging.getLogger(__name__)
+
 
 __all__ = ['plais']
+
 
 
 def main(args) -> None:
@@ -32,7 +39,3 @@ def main(args) -> None:
             issue = True
         else:
             issue = False
-
-
-#if __name__ == '__main__':
-#    main(args)
