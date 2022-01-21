@@ -4,16 +4,11 @@ import logging.config
 
 from tqdm import tqdm
 
-from utils.parse_config import logger_config, patch_config
+from utils.parse_config import logger_config
 from .recording import Recording
 from .frame import MedianVoxel
 from .residual import Residual
 
-
-#log  = logging.getLogger(__name__)
-#fmt = '%(asctime)s ~ %(name)14s ~ %(levelname)8s ::: %(message)s'
-#lvl = logging.INFO
-#logging.basicConfig(level=lvl, format=fmt)
 
 logging.config.dictConfig(logger_config())
 log = logging.getLogger(__name__)
