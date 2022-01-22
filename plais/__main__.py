@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging.config
 
 from tqdm import tqdm
+from numpy import arange as nparange
 
 from utils.parse_config import parse_config
 from .recording import Recording
@@ -23,23 +24,22 @@ def main(args) -> None:
     rec = Recording(args.FileChooser)
     if not args.end:
         args.end = int(rec.duration) - 1
-    median_filter = MedianVoxel(rec, 0, 180).filter
+    median_filter = MedianVoxel(rec, 0, 10).filter
 
     sec_multiplier = 2
     log.info(f'analysis duration {args.start} - {args.end} [sec]')
     log.info(f'frame fetch rate - every {sec_multiplier} second')
-    Nsteps = (args.end - args.start) // sec_multiplier
+    n_steps = (args.end - args.start) // sec_multiplier
+    idxs = nparange(n_steps) * sec_multiplier + args.start
 
-    for i in tqdm(range(Nsteps)):
-        tsec = args.start + i * sec_multiplier
-        idx_current = tsec * rec.fps
-        idx_next = (tsec + sec_multiplier) * rec.fps
-        current_frame = rec.frame(idx_current)
-        next_frame = rec.frame(idx_next)
-        residual = Residual(current_frame, next_frame, median_filter, args.sensitivity)
+    for i, idx in tqdm(enumerate(idxs)):
+        if i == len(idxs) - 1:
+            break
+        frame = rec.frame(idx)
+        frame_next = rec.frame(idxs[i+1])
+        residual = Residual(frame, frame_next, median_filter, args.sensitivity)
 
         if residual.signal > 1000:
             issue = True
         else:
             issue = False
-
