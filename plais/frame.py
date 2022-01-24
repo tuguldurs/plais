@@ -5,8 +5,7 @@ import logging
 import numpy as np
 from tqdm import tqdm
 
-from utils.parse_config import parse_config
-from .recording import Recording
+from .parse_config import parse_config
 
 
 log = logging.getLogger(__name__)
@@ -17,6 +16,7 @@ class Frame:
 
 	Attributes:
 		frame - RGB 3D image array.
+		processed - Processed (cropped, patched) grayscale 2D image.
 	"""
 
 	def __init__(self, frame) -> None:
@@ -44,10 +44,7 @@ class Frame:
 
 
 	def process(self, grayimg: np.ndarray) -> np.ndarray:
-		"""Applies null patches to 2D grayscale image.
-
-		TODO: patches should be read from config file.
-		"""
+		"""Applies null patches to 2D grayscale image."""
 		cropped = self.gray2crop(self.gray)
 		patches = parse_config('patch')
 		for patch in patches:
@@ -59,34 +56,19 @@ class MedianVoxel:
 	"""Creates median voxel filter.
 
 	Attributes:
-		rec - Input video as Recording object.
-		tstart - Time to start extracting frames.
-		tend - Time to end extracting frames.
+		frames - List of processed frames to build the filter.
+		filter - Ready to use filter.
 	"""
 
-	def __init__(self, rec: Recording, tstart: int, tend: int) -> None:
-		self.rec = rec
-		self.tstart = tstart
-		self.tend = tend
-		self.idxs = self._idx_second()
+	def __init__(self, frames: list) -> None:
+		self.frames = frames
 		self.filter = self._get_filter()
-
-	def _idx_second(self) -> np.ndarray:
-		"""Computes idx array for every second of given duration."""
-		duration = self.tend - self.tstart
-		return np.arange(duration) * self.rec.fps
-
-	def _collect_frames(self) -> list:
-		"""Collects all frames by index."""
-		return [Frame(self.rec.frame(idx)).processed for idx in tqdm(self.idxs)]
 
 	def _stack_frames(self) -> np.ndarray:
 		"""Stacks collected frames."""
-		frames = self._collect_frames()
-		return np.stack(frames, axis=-1)
+		return np.stack(self.frames, axis=-1)
 
 	def _get_filter(self) -> np.ndarray:
 		"""Computes median voxel filter based on standard deviation for each pixel."""
-		log.info('creating filter...')
 		stacked_frames = self._stack_frames()
 		return np.std(stacked_frames, axis=-1)

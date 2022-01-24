@@ -1,10 +1,5 @@
 import os
 from pathlib import Path
 
-# package directories
 package_path = Path(os.path.dirname(__file__)).parent
-package_data_path = package_path / 'data'
 package_config_path = package_path / 'config'
-
-# package import
-from . import __main__

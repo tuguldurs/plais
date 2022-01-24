@@ -5,7 +5,7 @@ gooey_root = os.path.dirname(gooey.__file__)
 
 block_cipher = None
 
-a = Analysis(['cli.py'],
+a = Analysis(['main.py'],
              pathex=[Path.cwd()],
              binaries=[],
              datas=[("config", "config")],

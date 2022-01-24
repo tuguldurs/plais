@@ -52,3 +52,6 @@ class Recording:
         log.info(f'video duration = {self.duration} seconds.')
         log.info(f'frame rate = {self.fps} per second.')
         log.info(f'frame size = {self.size}.')
+
+    def _close(self):
+        self.video.close()

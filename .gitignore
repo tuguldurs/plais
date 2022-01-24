@@ -132,3 +132,4 @@ clean.sh
 clean.bat
 d/
 test.py
+gooey_config.json

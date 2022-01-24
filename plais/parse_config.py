@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from plais import package_config_path
+from . import package_config_path
 
 
 def parse_config(config_name) -> dict:
