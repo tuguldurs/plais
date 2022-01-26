@@ -41,6 +41,9 @@ def gui_generator() -> None:
 
     parser.add_argument('-x', '--sensitivity', default=50,
         type=float, help='detector sensitivity [smaller more sensitive]')
+
+    parser.add_argument('-k', '--xkeyframe', default=2,
+        type=int, help='keyframe multiplier')
     
     parser.add_argument('-r', '--send-report', default='user@domain.com', 
         type=str, help='email to send the report to [not implemented yet!]')
@@ -54,16 +57,17 @@ def gui_generator() -> None:
 ##########################################################################################
 
 class Args:
-    def __init__(self, fname, tstart, tend, speed, sensitivity):
+    def __init__(self, fname, tstart, tend, speed, sensitivity, xkeyframe):
         self.FileChooser = fname
         self.start = tstart
         self.end = tend
         self.speed = speed
         self.sensitivity = sensitivity
+        self.kframe_mult = xkeyframe
 
 def tst():
     fname = 'd/steel_line_test.mp4'
-    args = Args(fname, 1159, 1164, 40, 50)
+    args = Args(fname, 1159, 1164, 40, 50, 2)
     p = Plais(args)
     p.run()
 
@@ -77,6 +81,7 @@ class Plais:
         self.tstart = args.start
         self.tend = args.end
         self.sensitivity = args.sensitivity
+        self.kframe_mult = args.xkeyframe
         self.n_cpu = cpu_count() - 2
 
     @staticmethod
@@ -126,11 +131,10 @@ class Plais:
         log.info('filter created.')
 
         # indices by second
-        sec_multiplier = 2
         log.info(f'analysis duration {self.tstart} - {self.tend} [sec]')
-        log.info(f'frame fetch rate - every {sec_multiplier} second')
-        n_steps = (self.tend - self.tstart) // sec_multiplier
-        idxs = np.arange(n_steps) * sec_multiplier + self.tstart
+        log.info(f'frame fetch rate - every {self.kframe_mult} second')
+        n_steps = (self.tend - self.tstart) // self.kframe_mult
+        idxs = np.arange(n_steps) * self.kframe_mult + self.tstart
 
         record = []
         for i, idx in tqdm(enumerate(idxs[:-1])):
@@ -138,7 +142,7 @@ class Plais:
             frame_next = rec.frame(idxs[i+1] * rec.fps)
             residual = Residual(frame, frame_next, median_filter, self.sensitivity)
 
-            if residual.signal > 1: # larger than ~ 3px
+            if residual.signal > 1:
                 issue = True
                 bbox = self._bounding_box(residual.map)
                 sigden = self._signal_density(residual.signal, bbox)
