@@ -39,7 +39,7 @@ def gui_generator() -> None:
     parser.add_argument('-s', '--speed', default=40,
         type=int, help='line speed [feet / minute]')
 
-    parser.add_argument('-x', '--sensitivity', default=10,
+    parser.add_argument('-x', '--sensitivity', default=50,
         type=float, help='detector sensitivity [smaller more sensitive]')
     
     parser.add_argument('-r', '--send-report', default='user@domain.com', 
@@ -63,7 +63,7 @@ class Args:
 
 def tst():
     fname = 'd/steel_line_test.mp4'
-    args = Args(fname, 1210, 1400, 40, 50)
+    args = Args(fname, 1159, 1164, 40, 50)
     p = Plais(args)
     p.run()
 
