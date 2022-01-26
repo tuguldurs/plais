@@ -12,6 +12,7 @@ from plais.parse_config import parse_config
 from plais.recording import Recording
 from plais.frame import Frame, MedianVoxel
 from plais.residual import Residual
+from plais.detect import Detection
 
 
 logging.config.dictConfig(parse_config('logger'))
@@ -62,7 +63,7 @@ class Args:
 
 def tst():
     fname = 'd/steel_line_test.mp4'
-    args = Args(fname, 1150, 1200, 40, 10)
+    args = Args(fname, 1210, 1400, 40, 50)
     p = Plais(args)
     p.run()
 
@@ -92,7 +93,7 @@ class Plais:
         """
         with Pool(self.n_cpu) as pool:
             log.info(f'collecting frames for filter with {self.n_cpu} workers...')
-            results = [pool.apply_async(self._process_frame, (idx * rec.fps, self.fname)) for idx in range(100)]
+            results = [pool.apply_async(self._process_frame, (idx * rec.fps, self.fname)) for idx in range(180)]
             frames = [result.get() for result in tqdm(results)]
         return frames
 
@@ -104,6 +105,12 @@ class Plais:
         xmin, xmax = np.where(x)[0][[0, -1]]
         ymin, ymax = np.where(y)[0][[0, -1]]
         return xmin-pad, xmax+pad, ymin-pad, ymax+pad
+
+    @staticmethod
+    def _signal_density(signal, bbox) -> float:
+        """Computes signal density within bounding box."""
+        xmin, xmax, ymin, ymax = bbox
+        return signal / ((xmax - xmin) * (ymax - ymin))
 
     def run(self):
         """Driver."""
@@ -131,16 +138,21 @@ class Plais:
             frame_next = rec.frame(idxs[i+1] * rec.fps)
             residual = Residual(frame, frame_next, median_filter, self.sensitivity)
 
-            if residual.signal > 1000:
+            if residual.signal > 1: # larger than ~ 3px
                 issue = True
                 bbox = self._bounding_box(residual.map)
+                sigden = self._signal_density(residual.signal, bbox)
+
             else:
                 issue = False
                 bbox = ()
+                sigden = 0
 
-            record.append((idx, issue, bbox, residual.signal))
+            record.append((idx, issue, bbox, residual.signal, sigden))
 
-            print(idx, bbox, issue, residual.signal)
+            print(idx, bbox, issue, residual.signal, sigden)
+
+        detections = Detection(record)
 
 
 if __name__ == '__main__':
