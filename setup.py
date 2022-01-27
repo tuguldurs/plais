@@ -6,7 +6,6 @@ setup(
     packages=['plais'],
     install_requires=[
         'numpy>=1.22',
-        'matplotlib>=3.5',
         'scikit-image>=0.19',
         'tqdm>=4.62',
         'imageio>=2.13',
