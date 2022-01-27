@@ -65,11 +65,11 @@ class Args:
         self.end = tend
         self.speed = speed
         self.sensitivity = sensitivity
-        self.kframe_mult = xkeyframe
+        self.xkeyframe = xkeyframe
 
 def tst():
     fname = 'd/steel_line_test.mp4'
-    args = Args(fname, 1159, 1164, 40, 50, 2)
+    args = Args(fname, 1150, 1200, 40, 50, 2)
     p = Plais(args)
     p.run()
 
@@ -163,7 +163,7 @@ class Plais:
 
         os.mkdir(self.outdir)
         if detections:
-            Visuals(detections).generate()
+            Visuals(detections, self.outdir).generate()
         #Report().generate()
 
 
