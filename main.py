@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import logging.config
 
 import numpy as np
@@ -13,6 +14,7 @@ from plais.recording import Recording
 from plais.frame import Frame, MedianVoxel
 from plais.residual import Residual
 from plais.detect import Detection
+from plais.visuals import Visuals
 
 
 logging.config.dictConfig(parse_config('logger'))
@@ -83,6 +85,7 @@ class Plais:
         self.sensitivity = args.sensitivity
         self.kframe_mult = args.xkeyframe
         self.n_cpu = cpu_count() - 2
+        self.outdir = 'PLAIS_RESULTS'
 
     @staticmethod
     def _process_frame(idx, fname) -> np.ndarray:
@@ -157,6 +160,11 @@ class Plais:
             print(idx, bbox, issue, residual.signal, sigden)
 
         detections = Detection(record)
+
+        os.mkdir(self.outdir)
+        if detections:
+            Visuals(detections).generate()
+        #Report().generate()
 
 
 if __name__ == '__main__':
