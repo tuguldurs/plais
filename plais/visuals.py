@@ -2,9 +2,8 @@ from __future__ import annotations
 
 import logging
 
-import matplotlib.pyplot as plt
-from matplotlib.patches import FancyBboxPatch as bbox_patch
-
+from PIL import Image
+from PIL import ImageDraw
 
 
 log = logging.getLogger(__name__)
@@ -19,29 +18,28 @@ class Visuals:
 		self.video = video
 		self.detections = detections
 		self.outdir = outdir
+		self.outline_color = 'red'
+		self.outline_width = 10
 
 	def _plot_zoom():
 		...
 
 	@staticmethod
 	def _get_bbox_patch(bbox: tuple) -> bbox_patch:
-		"""Draws bounding box."""
+		"""Create bounding box patch for PIL."""
 		xmin, xmax, ymin, ymax = bbox
-		patch = bbox_patch((xmin, ymin), xmax-xmin, ymax-ymin,
-			boxstyle='round, pad=0.1', fc='tomato', lw=3)
-		return patch
+		return [xmin, ymin, xmax, ymax]
 
 	def _plot_highlight(self, i: int, frame: np.ndarray, bbox: tuple) -> None:
 		"""Plots single detection with bounding box highlighted."""
 		savename = f'{self.outdir}/detection_{i:03}.png'
-		fig, ax = plt.subplots(tight_layout=True)
-		#ax.axis('off')
-		ax.imshow(frame)
-		ax.add_patch(self._get_bbox_patch(bbox))
-		plt.savefig(savename)
+		img = Image.fromarray(frame)
+		draw = ImageDraw.Draw(img)
+		patch = self._get_bbox_patch(bbox)
+		draw.rectangle(patch, outline=self.outline_color, width=self.outline_width)
+		img.save(savename)
 		log.info(f'highlighted plot created for detection # {i}')
 		log.info(f'plot saved in {savename}')
-		plt.close()
 
 	def _plot_detections(self) -> None:
 		"""."""
