@@ -114,12 +114,6 @@ class Plais:
         ymin, ymax = np.where(y)[0][[0, -1]]
         return xmin-pad, xmax+pad, ymin-pad, ymax+pad
 
-    @staticmethod
-    def _signal_density(signal, bbox) -> float:
-        """Computes signal density within bounding box."""
-        xmin, xmax, ymin, ymax = bbox
-        return signal / ((xmax - xmin) * (ymax - ymin))
-
     def run(self):
         """Driver."""
         rec = Recording(self.fname)
@@ -148,16 +142,14 @@ class Plais:
             if residual.signal > 1:
                 issue = True
                 bbox = self._bounding_box(residual.map)
-                sigden = self._signal_density(residual.signal, bbox)
 
             else:
                 issue = False
                 bbox = ()
-                sigden = 0
 
-            record.append((idx, issue, bbox, residual.signal, sigden))
+            record.append((idx, issue, bbox, residual.signal))
 
-            print(idx, bbox, issue, residual.signal, sigden)
+            print(idx, bbox, issue, residual.signal)
 
         detections = Detection(record)
 

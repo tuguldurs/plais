@@ -18,7 +18,7 @@ class Detection:
 
 	def _get_flags(self):
 		"""Fetch all flags from raw record."""
-		return [flag for _, flag, _, _, _ in self.raw_record]
+		return [flag for _, flag, _, _ in self.raw_record]
 
 	def _get_boundary_idxs(self):
 		"""Computes boundary record indices of individual detections."""

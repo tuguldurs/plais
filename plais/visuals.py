@@ -22,6 +22,7 @@ class Visuals:
 		self.outline_width = 10
 
 	def _plot_zoom():
+		"""Plots single detection with bounding box zoomer and contrasted."""
 		...
 
 	@staticmethod
@@ -41,12 +42,13 @@ class Visuals:
 		log.info(f'highlighted plot created for detection # {i}')
 		log.info(f'plot saved in {savename}')
 
-	def _plot_detections(self) -> None:
-		"""."""
+	def _create_plots(self) -> None:
+		"""Creates plots for all detections."""
 		for i, idx in enumerate(self.detections.middle_idxs):
-			idxsec, _, bbox, _, _ = self.detections.raw_record[idx]
+			idxsec, _, bbox, _ = self.detections.raw_record[idx]
 			frame = self.video.frame(idxsec * self.video.fps)
 			self._plot_highlight(i, frame, bbox)
 
 	def generate(self):
-		self._plot_detections()
+		self._create_plots()
+		#self._create_gifs()
