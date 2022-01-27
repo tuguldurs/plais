@@ -163,7 +163,7 @@ class Plais:
 
         os.mkdir(self.outdir)
         if detections:
-            Visuals(detections, self.outdir).generate()
+            Visuals(rec, detections, self.outdir).generate()
         #Report().generate()
 
 
