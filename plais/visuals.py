@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 
 
 class Visuals:
-	"""Generate graphics based on detections."""
+	"""Generates graphics based on detections."""
 
 	def __init__(self, video: recording.Recording, 
 		               detections: detect.Detections, 
@@ -24,11 +24,20 @@ class Visuals:
 		self.outline_color = 'red'
 		self.outline_width = 10
 
-	def _plot_zoom():
-		"""Plots single detection with bounding box zoomer and contrasted."""
-		...
+	def _plot_zoom(self, i: int, frame: np.ndarray, bbox: tuple) -> None:
+		"""Plots single detection with bounding box zoomer and contrasted.
 
-	def _get_bbox_patch(self, bbox: tuple) -> bbox_patch:
+		TODO: aspect ratio needs to be consistent with bbox shape."""
+		savename = f'{self.outdir}/detection_zoom_{i:03}.png'
+		img = Image.fromarray(frame)
+		img = img.crop(self._get_bbox_patch(bbox))
+		size = (frame.shape[1]//2, frame.shape[0]//2)
+		img = img.resize(size, Image.ANTIALIAS)
+		img.save(savename)
+		log.info(f'zoomed plot created for detection # {i}')
+		log.info(f'plot saved in {savename}')
+
+	def _get_bbox_patch(self, bbox: tuple) -> list:
 		"""Create bounding box patch for PIL."""
 		xmin, xmax, ymin, ymax = bbox
 		xmin += self.crop['xmin']
@@ -54,6 +63,7 @@ class Visuals:
 			idxsec, _, bbox, _ = self.detections.raw_record[idx]
 			frame = self.video.frame(idxsec * self.video.fps)
 			self._plot_highlight(i, frame, bbox)
+			self._plot_zoom(i, frame, bbox)
 
 	def generate(self):
 		self._create_plots()

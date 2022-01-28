@@ -161,5 +161,5 @@ class Plais:
 
 if __name__ == '__main__':
     freeze_support()
-    #gui_generator()
-    tst()
+    gui_generator()
+    #tst()
