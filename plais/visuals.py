@@ -5,6 +5,8 @@ import logging
 from PIL import Image
 from PIL import ImageDraw
 
+from .parse_config import parse_config
+
 
 log = logging.getLogger(__name__)
 
@@ -18,6 +20,7 @@ class Visuals:
 		self.video = video
 		self.detections = detections
 		self.outdir = outdir
+		self.crop = parse_config('crop')
 		self.outline_color = 'red'
 		self.outline_width = 10
 
@@ -25,10 +28,13 @@ class Visuals:
 		"""Plots single detection with bounding box zoomer and contrasted."""
 		...
 
-	@staticmethod
-	def _get_bbox_patch(bbox: tuple) -> bbox_patch:
+	def _get_bbox_patch(self, bbox: tuple) -> bbox_patch:
 		"""Create bounding box patch for PIL."""
 		xmin, xmax, ymin, ymax = bbox
+		xmin += self.crop['xmin']
+		ymin += self.crop['ymin']
+		xmax += self.crop['xmin']
+		ymax += self.crop['ymin']
 		return [xmin, ymin, xmax, ymax]
 
 	def _plot_highlight(self, i: int, frame: np.ndarray, bbox: tuple) -> None:
