@@ -30,11 +30,10 @@ class Frame:
 
 	@staticmethod
 	def gray2crop(grayimg: np.ndarray) -> np.ndarray:
-		"""Crops 2D grayscale image.
-
-		TODO: this should be read from config file.
-		"""
-		return grayimg[400:900, 240:1640]
+		"""Crops 2D grayscale image."""
+		crop = parse_config('crop')
+		return grayimg[crop['ymin']:crop['ymax'],
+					   crop['xmin']:crop['xmax']]
 
 	@staticmethod
 	def apply_patch(grayimg: np.ndarray, patch: list) -> np.ndarray:
