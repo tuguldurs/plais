@@ -24,6 +24,17 @@ class Visuals:
 		self.outline_color = 'red'
 		self.outline_width = 10
 
+	@staticmethod
+	def _get_bbox_size(imgsize, frameshape) -> tuple:
+		"""Computes zoomed image size by retaining bbox aspect ratio."""
+		framex, framey = frameshape[::-1]
+		imgx, imgy = imgsize
+		if imgx > imgy:
+			size = framex, imgx * (framex // imgx)
+		else:
+			size = imgx * (framey // imgy), framey
+		return size
+
 	def _plot_zoom(self, i: int, frame: np.ndarray, bbox: tuple) -> None:
 		"""Plots single detection with bounding box zoomer and contrasted.
 
@@ -31,7 +42,8 @@ class Visuals:
 		savename = f'{self.outdir}/detection_zoom_{i:03}.png'
 		img = Image.fromarray(frame)
 		img = img.crop(self._get_bbox_patch(bbox))
-		size = (frame.shape[1]//2, frame.shape[0]//2)
+		size = self._get_bbox_size(img.size, frame.shape[:-1])
+		#size = (frame.shape[1]//2, frame.shape[0]//2)
 		img = img.resize(size, Image.ANTIALIAS)
 		img.save(savename)
 		log.info(f'zoomed plot created for detection # {i}')
