@@ -114,6 +114,14 @@ class Plais:
         ymin, ymax = np.where(y)[0][[0, -1]]
         return xmin-pad, xmax+pad, ymin-pad, ymax+pad
 
+    def _idx_time(self) -> np.ndarray:
+        """Compute time indices for each analysis frame."""
+        log.info(f'analysis duration {self.tstart} - {self.tend} [sec]')
+        log.info(f'frame fetch rate - every {self.kframe_mult} second')
+        n_steps = (self.tend - self.tstart) // self.kframe_mult
+        idxs = np.arange(n_steps) * self.kframe_mult + self.tstart
+        return idxs
+
     def run(self):
         """Driver."""
         rec = Recording(self.fname)
@@ -128,10 +136,7 @@ class Plais:
         log.info('filter created.')
 
         # indices by second
-        log.info(f'analysis duration {self.tstart} - {self.tend} [sec]')
-        log.info(f'frame fetch rate - every {self.kframe_mult} second')
-        n_steps = (self.tend - self.tstart) // self.kframe_mult
-        idxs = np.arange(n_steps) * self.kframe_mult + self.tstart
+        idxs = self._idx_time()
 
         record = []
         for i, idx in tqdm(enumerate(idxs[:-1])):
