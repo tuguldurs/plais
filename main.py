@@ -149,7 +149,7 @@ class Plais:
 
             record.append((idx, issue, bbox, residual.signal))
 
-            print(idx, bbox, issue, residual.signal)
+            log.info(f'{idx}-{bbox}-{issue}-{residual.signal}')
 
         detections = Detection(record)
 
