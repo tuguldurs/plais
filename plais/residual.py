@@ -25,8 +25,8 @@ class Residual:
 		               next_frame: np.ndarray,
 		               median_filter: np.ndarray, 
 		               sensitivity: float) -> None:
-		self.current = Frame(current_frame).processed
-		self.next = Frame(next_frame).processed
+		self.current = current_frame
+		self.next = next_frame
 		self.sensitivity = sensitivity
 		self.image = self._residual_image(median_filter)
 		self.signal = self._residual_signal()

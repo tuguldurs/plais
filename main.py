@@ -139,9 +139,9 @@ class Plais:
         idxs = self._idx_time()
 
         record = []
-        frame_current = rec.frame(idxs[0] * rec.fps)
+        frame_current = self._process_frame(idxs[0] * rec.fps, self.fname)
         for idx in tqdm(idxs[1:]):
-            frame_next = rec.frame(idx * rec.fps)
+            frame_next = self._process_frame(idx * rec.fps, self.fname)
             residual = Residual(frame_current, frame_next, 
                 median_filter, self.sensitivity)
 
