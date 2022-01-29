@@ -139,22 +139,23 @@ class Plais:
         idxs = self._idx_time()
 
         record = []
-        for i, idx in tqdm(enumerate(idxs[:-1])):
-            frame = rec.frame(idx * rec.fps)
-            frame_next = rec.frame(idxs[i+1] * rec.fps)
-            residual = Residual(frame, frame_next, median_filter, self.sensitivity)
+        frame_current = rec.frame(idxs[0] * rec.fps)
+        for idx in tqdm(idxs[1:]):
+            frame_next = rec.frame(idx * rec.fps)
+            residual = Residual(frame_current, frame_next, 
+                median_filter, self.sensitivity)
 
             if residual.signal > 1:
                 issue = True
                 bbox = self._bounding_box(residual.map)
 
             else:
-                issue = False
-                bbox = ()
+                issue, bbox = False, ()
 
             record.append((idx, issue, bbox, residual.signal))
-
             log.info(f'{idx}-{bbox}-{issue}-{residual.signal}')
+
+            frame_current = frame_next
 
         detections = Detection(record)
 
