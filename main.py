@@ -140,20 +140,20 @@ class Plais:
 
         record = []
         frame_current = self._process_frame(idxs[0] * rec.fps, self.fname)
-        for idx in tqdm(idxs[1:]):
+        for i, idx in tqdm(enumerate(idxs[1:])):
             frame_next = self._process_frame(idx * rec.fps, self.fname)
             residual = Residual(frame_current, frame_next, 
                 median_filter, self.sensitivity)
 
-            if residual.signal > 1:
+            if residual.signal:
                 issue = True
                 bbox = self._bounding_box(residual.map)
 
             else:
                 issue, bbox = False, ()
 
-            record.append((idx, issue, bbox, residual.signal))
-            log.info(f'{idx}-{bbox}-{issue}-{residual.signal}')
+            record.append((idxs[i], issue, bbox, residual.signal))
+            log.info(f'{idxs[i]}-{bbox}-{issue}-{residual.signal}')
 
             frame_current = frame_next
 
@@ -167,5 +167,5 @@ class Plais:
 
 if __name__ == '__main__':
     freeze_support()
-    gui_generator()
-    #tst()
+    #gui_generator()
+    tst()
