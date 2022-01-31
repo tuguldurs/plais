@@ -16,6 +16,7 @@ from plais.frame import Frame, MedianVoxel
 from plais.residual import Residual
 from plais.detect import Detection
 from plais.visuals import Visuals
+from plais.report import Report
 from plais import package_output_path
 
 
@@ -169,7 +170,7 @@ class Plais:
 
         if detections:
             Visuals(rec, detections).generate()
-        #Report().generate()
+        Report(detections).generate()
 
 
 if __name__ == '__main__':
