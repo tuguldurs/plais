@@ -88,7 +88,14 @@ class Plais:
         self.sensitivity = args.sensitivity
         self.kframe_mult = args.xkeyframe
         self.n_cpu = cpu_count() - 2
-        #self.outdir = 'PLAIS_RESULTS'
+
+    @staticmethod
+    def _output_dir() -> None:
+        if os.path.isdir(package_output_path):
+            log.info('old output directory removed.')
+            rmtree(package_output_path)
+        log.info('output directory created.')
+        os.mkdir(package_output_path)
 
     @staticmethod
     def _process_frame(idx, fname) -> np.ndarray:
@@ -98,10 +105,7 @@ class Plais:
         return Frame(frame).processed
 
     def _collect_frames(self, rec) -> list:
-        """Collects processed frames for median filter.
-
-        TODO: this is a terrible parallelization, need shared memory for rec object.
-        """
+        """Collects processed frames for median filter."""
         with Pool(self.n_cpu) as pool:
             log.info(f'collecting frames for filter with {self.n_cpu} workers...')
             results = [pool.apply_async(self._process_frame, (idx * rec.fps, self.fname)) for idx in range(180)]
@@ -127,11 +131,13 @@ class Plais:
 
     def run(self):
         """Driver."""
+
+        self._output_dir()
         rec = Recording(self.fname)
 
         # end time
         if not self.tend:
-            self.tend = int(rec.duration) - 2
+            self.tend = int(rec.duration) - self.kframe_mult
 
         # median filter
         frames = self._collect_frames(rec)
@@ -141,17 +147,17 @@ class Plais:
         # indices by second
         idxs = self._idx_time()
 
+        # main timesteps for diff imaging
         record = []
         frame_current = self._process_frame(idxs[0] * rec.fps, self.fname)
         for i, idx in tqdm(enumerate(idxs[1:])):
+            # Note: i - starts at 0, but idx starts at idxs[1]
             frame_next = self._process_frame(idx * rec.fps, self.fname)
-            residual = Residual(frame_current, frame_next, 
-                median_filter, self.sensitivity)
+            residual = Residual(frame_current, frame_next, median_filter, self.sensitivity)
 
             if residual.signal:
                 issue = True
                 bbox = self._bounding_box(residual.map)
-
             else:
                 issue, bbox = False, ()
 
@@ -161,12 +167,6 @@ class Plais:
             frame_current = frame_next
 
         detections = Detection(record)
-
-        if os.path.isdir(package_output_path):
-            log.info('old output directory removed.')
-            rmtree(package_output_path)
-        log.info('output directory created.')
-        os.mkdir(package_output_path)
 
         if detections:
             Visuals(rec, detections).generate()
