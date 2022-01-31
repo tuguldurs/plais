@@ -35,14 +35,11 @@ class Visuals:
 		return size
 
 	def _plot_zoom(self, i: int, frame: np.ndarray, bbox: tuple) -> None:
-		"""Plots single detection with bounding box zoomer and contrasted.
-
-		TODO: aspect ratio needs to be consistent with bbox shape."""
+		"""Plots single detection with bounding box zoomer and contrasted."""
 		savename = f'{package_output_path}/detection_zoom_{i:03}.png'
 		img = Image.fromarray(frame)
 		img = img.crop(self._get_bbox_patch(bbox))
 		size = self._get_bbox_size(img.size, frame.shape[:-1])
-		#size = (frame.shape[1]//2, frame.shape[0]//2)
 		img = img.resize(size, Image.ANTIALIAS)
 		img.save(savename)
 		log.info(f'zoomed plot created for detection # {i}')
