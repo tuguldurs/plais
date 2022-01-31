@@ -15,6 +15,7 @@ from plais.frame import Frame, MedianVoxel
 from plais.residual import Residual
 from plais.detect import Detection
 from plais.visuals import Visuals
+from plais import package_output_path
 
 
 logging.config.dictConfig(parse_config('logger'))
@@ -85,7 +86,7 @@ class Plais:
         self.sensitivity = args.sensitivity
         self.kframe_mult = args.xkeyframe
         self.n_cpu = cpu_count() - 2
-        self.outdir = 'PLAIS_RESULTS'
+        #self.outdir = 'PLAIS_RESULTS'
 
     @staticmethod
     def _process_frame(idx, fname) -> np.ndarray:
@@ -159,13 +160,13 @@ class Plais:
 
         detections = Detection(record)
 
-        os.mkdir(self.outdir)
+        os.mkdir(package_output_path)
         if detections:
-            Visuals(rec, detections, self.outdir).generate()
+            Visuals(rec, detections).generate()
         #Report().generate()
 
 
 if __name__ == '__main__':
     freeze_support()
-    #gui_generator()
-    tst()
+    gui_generator()
+    #tst()

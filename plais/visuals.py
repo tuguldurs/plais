@@ -6,6 +6,7 @@ from PIL import Image
 from PIL import ImageDraw
 
 from .parse_config import parse_config
+from . import package_output_path
 
 
 log = logging.getLogger(__name__)
@@ -15,11 +16,9 @@ class Visuals:
 	"""Generates graphics based on detections."""
 
 	def __init__(self, video: recording.Recording, 
-		               detections: detect.Detections, 
-		               outdir: str) -> None:
+		               detections: detect.Detections) -> None:
 		self.video = video
 		self.detections = detections
-		self.outdir = outdir
 		self.crop = parse_config('crop')
 		self.outline_color = 'red'
 		self.outline_width = 10
@@ -39,7 +38,7 @@ class Visuals:
 		"""Plots single detection with bounding box zoomer and contrasted.
 
 		TODO: aspect ratio needs to be consistent with bbox shape."""
-		savename = f'{self.outdir}/detection_zoom_{i:03}.png'
+		savename = f'{package_output_path}/detection_zoom_{i:03}.png'
 		img = Image.fromarray(frame)
 		img = img.crop(self._get_bbox_patch(bbox))
 		size = self._get_bbox_size(img.size, frame.shape[:-1])
@@ -60,7 +59,7 @@ class Visuals:
 
 	def _plot_highlight(self, i: int, frame: np.ndarray, bbox: tuple) -> None:
 		"""Plots single detection with bounding box highlighted."""
-		savename = f'{self.outdir}/detection_{i:03}.png'
+		savename = f'{package_output_path}/detection_{i:03}.png'
 		img = Image.fromarray(frame)
 		draw = ImageDraw.Draw(img)
 		patch = self._get_bbox_patch(bbox)
