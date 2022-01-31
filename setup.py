@@ -11,7 +11,8 @@ setup(
         'imageio>=2.13',
         'imageio-ffmpeg>=0.4',
         'pyinstaller>=4.8',
-        'gooey>=1.0.8'
+        'gooey>=1.0.8',
+        'fpdf>=1.7'
     ],
     python_requires='>=3.7',
 )
