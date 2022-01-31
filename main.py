@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import logging.config
+from shutil import rmtree
 
 import numpy as np
 from tqdm import tqdm
@@ -160,7 +161,12 @@ class Plais:
 
         detections = Detection(record)
 
+        if os.path.isdir(package_output_path):
+            log.info('old output directory removed.')
+            rmtree(package_output_path)
+        log.info('output directory created.')
         os.mkdir(package_output_path)
+
         if detections:
             Visuals(rec, detections).generate()
         #Report().generate()
