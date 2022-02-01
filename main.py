@@ -85,6 +85,7 @@ class Plais:
         self.fname = args.FileChooser
         self.tstart = args.start
         self.tend = args.end
+        self.speed = args.speed
         self.sensitivity = args.sensitivity
         self.kframe_mult = args.xkeyframe
         self.n_cpu = cpu_count() - 2
@@ -170,7 +171,7 @@ class Plais:
 
         if detections:
             Visuals(rec, detections).generate()
-        Report(detections).generate()
+        Report(rec, self.tstart, self.tend, detections, self.speed).generate()
 
 
 if __name__ == '__main__':
