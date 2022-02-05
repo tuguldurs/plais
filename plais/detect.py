@@ -16,11 +16,11 @@ class Detection:
 		self.middle_idxs = self._get_middle_idxs()
 		self._logger()
 
-	def _get_flags(self):
+	def _get_flags(self) -> list:
 		"""Fetch all flags from raw record."""
 		return [flag for _, flag, _, _ in self.raw_record]
 
-	def _get_boundary_idxs(self):
+	def _get_boundary_idxs(self) -> list:
 		"""Computes boundary record indices of individual detections."""
 		idx, boundaries = 0, []
 		for key, group in groupby(self._get_flags()):
@@ -34,7 +34,7 @@ class Detection:
 				boundaries.append((start, end))
 		return boundaries
 
-	def _get_middle_idxs(self):
+	def _get_middle_idxs(self) -> list:
 		"""Computes mid record indices for each detection."""
 		idxs = []
 		boundaries = self._get_boundary_idxs()
@@ -42,5 +42,5 @@ class Detection:
 			idxs.append(round((start + end)/2))
 		return idxs
 
-	def _logger(self):
+	def _logger(self) -> None:
 		log.info(f'number of unique events identified = {len(self.boundary_idxs)}.')

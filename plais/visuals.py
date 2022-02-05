@@ -73,6 +73,6 @@ class Visuals:
 			self._plot_highlight(i, frame, bbox)
 			self._plot_zoom(i, frame, bbox)
 
-	def generate(self):
+	def generate(self) -> None:
 		self._create_plots()
 		#self._create_gifs()

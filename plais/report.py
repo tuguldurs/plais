@@ -13,27 +13,28 @@ log = logging.getLogger(__name__)
 
 class PDF(FPDF):
     """Inherited class from fpdf for general config and methods."""
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.width = 210
         self.height = 297
         self.breakheight = '20'
         
-    def header(self):
-        """Header config."""
+    def header(self) -> None:
+        """Sets header config."""
         self.set_font('Arial', 'B', 11)
         self.cell(self.width - 80)
         self.cell(60, 1, 'Video Analysis Report by PLAIS', 0, 0, 'R')
         self.ln(20)
         
-    def footer(self):
-        """Footer config."""
+    def footer(self) -> None:
+        """Sets footer config."""
         self.set_y(-15)
         self.set_font('Arial', 'I', 8)
         self.set_text_color(128)
         self.cell(0, 10, 'Page ' + str(self.page_no()), 0, 0, 'C')
 
-    def summary_page_body(self, rec, tstart, tend, ndetections):
+    def summary_page_body(self, rec, tstart, tend, ndetections) -> None:
+        """Prints summary page."""
         self.set_font('Arial', 'B', 15)
         self.cell(0, 1, 'Input File:', 0, 1)
         self.cell(0, 10, f'{rec.fname}', 0, 2, 'C')
@@ -50,7 +51,7 @@ class PDF(FPDF):
             self.set_text_color(255,0,0)
         self.cell(0, 10, f'number of unique problems identified: {ndetections}')
 
-    def detection_page_body(self, i, info, images):
+    def detection_page_body(self, i, info, images) -> None:
         """Prints body page."""
         tsec, length_m, length_ft = info
         self.set_text_color(0,0,0)
@@ -66,12 +67,12 @@ class PDF(FPDF):
         width_zoom_image = x * (self.height - 175) / y
         self.image(images[1], 15, 160, width_zoom_image)
 
-    def print_summary_page(self, rec, tstart, tend, ndetections):
+    def print_summary_page(self, rec, tstart, tend, ndetections) -> None:
         """Prints summary page."""
         self.add_page()
         self.summary_page_body(rec, tstart, tend, ndetections)
 
-    def print_detection_page(self, i, info, images):
+    def print_detection_page(self, i, info, images) -> None:
         """Prints detection pages."""
         self.add_page()
         self.detection_page_body(i, info, images)

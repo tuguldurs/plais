@@ -70,7 +70,7 @@ class Args:
         self.sensitivity = sensitivity
         self.xkeyframe = xkeyframe
 
-def tst():
+def testrun():
     fname = 'd/steel_line_test.mp4'
     args = Args(fname, 1150, 1200, 40, 50, 2)
     p = Plais(args)
@@ -81,7 +81,7 @@ def tst():
 class Plais:
     """Prod-Line ai system for Wolverine."""
     
-    def __init__(self, args):
+    def __init__(self, args) -> None:
         self.fname = args.FileChooser
         self.tstart = args.start
         self.tend = args.end
@@ -114,7 +114,7 @@ class Plais:
         return frames
 
     @staticmethod
-    def _bounding_box(img, pad=50):
+    def _bounding_box(img, pad=50) -> tuple:
         """Bounding box of binary image."""
         y = np.any(img, axis=1)
         x = np.any(img, axis=0)
@@ -130,7 +130,7 @@ class Plais:
         idxs = np.arange(n_steps) * self.kframe_mult + self.tstart
         return idxs
 
-    def run(self):
+    def run(self) -> None:
         """Driver."""
 
         self._output_dir()
@@ -177,4 +177,4 @@ class Plais:
 if __name__ == '__main__':
     freeze_support()
     gui_generator()
-    #tst()
+    #testrun()
